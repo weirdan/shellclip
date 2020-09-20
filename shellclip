@@ -1,17 +1,16 @@
 #!/usr/bin/env php
 <?php
+$runSeparator = "\u{256d}"; // should be first character of a line
+$cmdLineStart = "\u{2570}";
 
 $t = file_get_contents("php://stdin");
 
-// split on interline
-$session = array_filter(preg_split(
-    '/^' . "\u{256d}" . '[^\\n]*' . "\u{256e}" . '$\\n/xm',
-    $t
-));
-
 echo '```console' . PHP_EOL;
-foreach ($session as $i => $run) {
-    // if run starts with a command
+while (preg_match("/^$runSeparator/m", $t, $matches, PREG_OFFSET_CAPTURE|PREG_UNMATCHED_AS_NULL)) {
+    $run = substr($t, 0, $matches[0][1]);
+    // drop until command line starts
+    $run = substr($run, strpos($run, $cmdLineStart));
+
     // replace first line of a command with a more traditional prompt
     $run = preg_replace(
         "/^\u{2570}\u{2500}[ ](.*?)[ ]*\u{e0b2}.*$/m",
@@ -19,5 +18,7 @@ foreach ($session as $i => $run) {
         $run
     );
     echo $run;
+
+    $t = substr($t, $matches[0][1] + strlen($runSeparator));
 }
 echo '```' . PHP_EOL;
