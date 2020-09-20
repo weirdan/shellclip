@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+
+$t = file_get_contents("php://stdin");
+
+// split on interline
+$session = array_filter(preg_split(
+    '/^' . "\u{256d}" . '[^\\n]*' . "\u{256e}" . '$\\n/xm',
+    $t
+));
+
+echo '```console' . PHP_EOL;
+foreach ($session as $i => $run) {
+    // if run starts with a command
+    // replace first line of a command with a more traditional prompt
+    $run = preg_replace(
+        "/^\u{2570}\u{2500}[ ](.*?)[ ]*\u{e0b2}.*$/m",
+        '$ \\1',
+        $run
+    );
+    echo $run;
+}
+echo '```' . PHP_EOL;

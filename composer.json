@@ -1,0 +1,13 @@
+{
+    "name": "weirdan/shellclip",
+    "type": "project",
+    "license": "MIT",
+    "description": "Converts the copied shell output into the form suitable to post on GH",
+    "authors": [
+        {
+            "name": "Bruce Weirdan",
+            "email": "weirdan@gmail.com"
+        }
+    ],
+    "bin": "shellclip"
+}
